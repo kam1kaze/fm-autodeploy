@@ -1,7 +1,7 @@
 #!/bin/bash
 
 get_previous_networks() {
-  virsh net-list | grep "$env_name_prefix" | awk '{print $1}'
+  virsh net-list --all | grep "$env_name_prefix" | awk '{print $1}'
 }
 
 define_network() {
@@ -71,7 +71,8 @@ check_existing_bridge() {
 
 check_existing_vms() { 
   NET=$1
-  LIST_VM=`grep -wr $NET /etc/libvirt/qemu | cut -d: -f 1 | cut -d"/" -f 5 | cut -d. -f 1 | sed '/networks/d'`
+#  LIST_VM=`grep -wr $NET /etc/libvirt/qemu | cut -d: -f 1 | cut -d"/" -f 5 | cut -d. -f 1 | sed '/networks/d'`
+  LIST_VM=`virsh list --all | awk '{print $2}' | tail -n+3 | xargs -I{} virsh dumpxml {} | grep $NET | cut -d: -f 1 | cut -d"'" -f 2`
   echo "Network $NET is used by $LIST_VM VM"
 }
 

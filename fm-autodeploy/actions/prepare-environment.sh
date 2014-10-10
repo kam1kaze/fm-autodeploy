@@ -39,4 +39,3 @@ check_all_bridges || exit 1
 
 #create_all_networks
 create_all_networks
-

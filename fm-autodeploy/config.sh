@@ -1,13 +1,14 @@
 #!/bin/bash 
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Get the first available ISO from the directory 'iso'
-iso_path=`ls -1 $(pwd)/iso/*.iso 2>/dev/null | head -1`
+iso_path=`ls -1 $SCRIPT_DIR/iso/*.iso 2>/dev/null | head -1`
 
 # Every Fuel Web machine name will start from this prefix  
-env_name_prefix=fw51-mlvov-
+env_name_prefix=fw51-jenkins-
 
-vm_disk_path="~jenkins/images"
+vm_disk_path="$SCRIPT_DIR/images"
 
 #Use bridge interface: 0 - false, 1 - true. If you have existing bridge with pysical NIC you can use it for VMs. Bridged network will be created as eth1 in guest OS.
 use_bridge=0
