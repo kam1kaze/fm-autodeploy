@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # Include the script with handy functions to operate VMs and Virtual networking
 source config.sh 
