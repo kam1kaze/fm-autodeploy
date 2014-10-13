@@ -2,6 +2,12 @@
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# The number of nodes for installing OpenStack on
+#   - for minimal non-HA installation, specify 2 (1 controller + 1 compute)
+#   - for minimal non-HA with Cinder installation, specify 3 (1 ctrl + 1 compute + 1 cinder)
+#   - for minimal HA installation, specify 4 (3 controllers + 1 compute)
+cluster_size=2
+
 # Get the first available ISO from the directory 'iso'
 iso_path=`ls -1 $SCRIPT_DIR/iso/*.iso 2>/dev/null | head -1`
 
@@ -46,5 +52,23 @@ vm_master_ip=10.20.100.2
 vm_master_username=root
 vm_master_password=r00tme
 vm_master_prompt='root@fuelweb ~]#'
+
+# Slave node settings
+vm_slave_cpu_cores=1
+
+# This section allows you to define RAM size in MB for each slave node.
+# Keep in mind that PXE boot might not work correctly with values lower than 768.
+# You can specify memory size for the specific slaves, other will get default vm_slave_memory_default
+vm_slave_memory_default=768
+vm_slave_memory_mb[1]=1024   # for controller node 768 MB should be sufficient
+vm_slave_memory_mb[2]=1280  # for compute node 1GB is recommended, otherwise VM instances in OpenStack may not boot
+vm_slave_memory_mb[3]=768   # for a dedicated Cinder node 768 MB should be sufficient
+
+# This section allows you to define HDD size in MB for all the slaves nodes.
+# All the slaves will have identical disk configuration. Each slave will have three disks of the following sizes.
+vm_slave_first_disk_mb=25600
+vm_slave_second_disk_mb=25600
+vm_slave_third_disk_mb=23000
+
 
 domain_name="mirtest.net"
