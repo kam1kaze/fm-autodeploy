@@ -30,8 +30,8 @@ fi
 disk_name="${name}_0"
 disk_filename="${disk_name}.qcow2"
 
-create_pool $vm_disk_path
-qemu-img create -f qcow2 -o preallocation=metadata ${vm_disk_path}/${disk_filename} ${vm_master_disk_mb}M
+#create_pool $vm_disk_path
+#qemu-img create -f qcow2 -o preallocation=metadata ${vm_disk_path}/${disk_filename} ${vm_master_disk_mb}M
 
 # Add other host-only nics to VM
 HOST_NETS=""
@@ -42,7 +42,7 @@ done
 
 #echo "virt-install --connect qemu:///system --hvm --name $name --ram $vm_master_memory_mb --vcpus $vm_master_cpu_cores --disk ${vm_disk_path}/${disk_filename},bus=virtio,cache=none,format=qcow2,io=native -w network=$first_net,model=virtio $BRIDGE_NET $HOST_NETS --disk ${iso_path},device=cdrom --autostart --graphics vnc --location $(pwd) --extra-args \"initrd=initrd.img biosdevname=0 ks=cdrom:/ks.cfg ip=$vm_master_ip gw=$first_ip dns1=8.8.8.8 netmask=255.255.255.0 hostname=fuelweb.domain.tld\""
 
-virt-install --connect qemu:///system --noautoconsole --hvm --name $name --ram $vm_master_memory_mb --vcpus $vm_master_cpu_cores --disk ${vm_disk_path}/${disk_filename},bus=virtio,cache=none,format=qcow2,io=native -w network=$first_net,model=virtio $BRIDGE_NET $HOST_NETS --disk ${iso_path},device=cdrom --autostart --graphics vnc --location $(pwd) --extra-args "initrd=initrd.img biosdevname=0 ks=cdrom:/ks.cfg ip=$vm_master_ip gw=$first_ip dns1=8.8.8.8 netmask=255.255.255.0 hostname=fuelweb.${domain_name}"
+virt-install --connect qemu:///system --noautoconsole --hvm --name $name --ram $vm_master_memory_mb --vcpus $vm_master_cpu_cores --disk pool=default,size=${vm_master_disk_mb},bus=virtio,cache=none,format=qcow2,io=native -w network=$first_net,model=virtio $BRIDGE_NET $HOST_NETS --disk ${iso_path},device=cdrom --autostart --graphics vnc --location $(pwd) --extra-args "initrd=initrd.img biosdevname=0 ks=cdrom:/ks.cfg ip=$vm_master_ip gw=$first_ip dns1=8.8.8.8 netmask=255.255.255.0 hostname=fuelweb.${domain_name}"
 
 
 # Start virtual machine with the master node

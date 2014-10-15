@@ -9,7 +9,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cluster_size=2
 
 # Get the first available ISO from the directory 'iso'
-iso_path=`ls -1 $SCRIPT_DIR/iso/*.iso 2>/dev/null | head -1`
+iso_path=`ls -1 $SCRIPT_DIR/../*.iso 2>/dev/null | head -1`
 
 # Every Fuel Web machine name will start from this prefix  
 env_name_prefix=fw51-jenkins-
@@ -42,7 +42,7 @@ done
 # Master node settings
 vm_master_cpu_cores=1
 vm_master_memory_mb=1224
-vm_master_disk_mb=40480
+vm_master_disk_mb=40
 
 # These settings will be used to check if master node has installed or not.
 # If you modify networking params for master node during the boot time
