@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash -x
 
 #
 # This script creates slaves node for the product, launches its installation,

@@ -6,7 +6,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #   - for minimal non-HA installation, specify 2 (1 controller + 1 compute)
 #   - for minimal non-HA with Cinder installation, specify 3 (1 ctrl + 1 compute + 1 cinder)
 #   - for minimal HA installation, specify 4 (3 controllers + 1 compute)
-cluster_size=4
+cluster_size=2
 
 # Get the first available ISO from the directory 'iso'
 iso_path=`ls -1 $SCRIPT_DIR/../*.iso 2>/dev/null | head -1`

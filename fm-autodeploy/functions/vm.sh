@@ -2,10 +2,6 @@
 
 # This file contains the functions to manage VMs in through VirtualBox CLI
 
-get_vm_base_path() {
-    virsh pool-dumpxml jenkins | grep path | sed  's/.*<path>//;s/<\/path>//'
-}
-
 get_vms_running() {
     virsh list | grep -E "running|работает" | awk '{print $2}'
 }
@@ -24,14 +20,6 @@ is_vm_running() {
     else
         return 1
     fi
-}
-
-create_pool(){
-    #mkdir -p ~jenkins/images
-    #virsh pool-create-as --name jenkins --target ~jenkins/images --type dir
-    mkdir -p $1
-    virsh pool-create-as --name jenkins --target $1 --type dir
-    virsh pool-autostart jenkins
 }
 
 create_vm() {
@@ -90,27 +78,30 @@ add_disk_to_vm() {
 
     echo "Adding disk to $vm_name, with size $disk_mb Mb..."
 
-    vm_disk_path="$(get_vm_base_path)"
+    #vm_disk_path="$(get_vm_base_path)"
     disk_name="${vm_name}_${port}"
     disk_filename="${disk_name}.qcow2"
-    qemu-img create -f qcow2 -o preallocation=metadata ${vm_disk_path}/${disk_filename} ${disk_mb}M
+    #qemu-img create -f qcow2 -o preallocation=metadata ${vm_disk_path}/${disk_filename} ${disk_mb}M
+    virsh vol-create-as default ${disk_name} ${disk_mb}M --format qcow2
     # adding sata disk via xml, as attach-disk can't specify bus=sata
     #virsh attach-disk ${vm_name} --source ${vm_disk_path}/${disk_filename} --target ${target} --subdriver qcow2 --persistent
-    echo "Creating network template"
-    cat <<EOF > /tmp/disk_device.xml
-    <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2' cache='unsafe'/>
-      <source file="${vm_disk_path}/${disk_filename}"/>
-      <target dev="$target" bus='virtio'/>
-    </disk>
-EOF
-    virsh attach-device $vm_name /tmp/disk_device.xml --persistent
+#    echo "Creating network template"
+#    cat <<EOF > /tmp/disk_device.xml
+#    <disk type='file' device='disk'>
+#      <driver name='qemu' type='qcow2' cache='unsafe'/>
+#      <source file="${vm_disk_path}/${disk_filename}"/>
+#      <target dev="$target" bus='virtio'/>
+#    </disk>
+#EOF
+#    virsh attach-device $vm_name /tmp/disk_device.xml --persistent
+    disk_path=`virsh vol-path ${disk_name} --pool default`
+    virsh attach-disk ${vm_name} --source ${disk_path} --target ${target} --subdriver qcow2 --persistent 
 }
 
 delete_vm() {
     name=$1
-    vm_base_path=$(get_vm_base_path)
-    vm_path="${vm_base_path}/${name}_*\.qcow2"
+    #vm_base_path=$(get_vm_base_path)
+    #vm_path="${vm_base_path}/${name}_*\.qcow2"
 
     # Power off VM, if it's running
     if is_vm_running $name; then
@@ -125,8 +116,10 @@ delete_vm() {
     # Deleting images
     for file in $vm_path; do 
 	if [ -f "$file"  ]; then 
-        echo "Deleting existing $file for virtual machine $name..."
-        virsh vol-delete $file --pool jenkins 
+        echo "Deleting existing volumes for virtual machine $name..."
+        virsh vol-delete $name_0 --pool default 
+        virsh vol-delete $name_1 --pool default 
+        virsh vol-delete $name_2 --pool default 
 	fi
     done
 }
