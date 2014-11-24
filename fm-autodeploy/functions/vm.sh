@@ -100,8 +100,6 @@ add_disk_to_vm() {
 
 delete_vm() {
     name=$1
-    #vm_base_path=$(get_vm_base_path)
-    #vm_path="${vm_base_path}/${name}_*\.qcow2"
 
     # Power off VM, if it's running
     if is_vm_running $name; then
@@ -109,19 +107,14 @@ delete_vm() {
         virsh destroy $name
     fi
 
+    # Deleting attached volumes
+    virsh -q domblklist $name | awk '/^vda/{print $2}' | while read volume; do
+        virsh vol-delete $volume
+    done
+
     # Undefining VM
     echo "Deleting existing virtual machine $name..."
     virsh undefine $name
-
-    # Deleting images
-    for file in $vm_path; do 
-	if [ -f "$file"  ]; then 
-        echo "Deleting existing volumes for virtual machine $name..."
-        virsh vol-delete $name_0 --pool default 
-        virsh vol-delete $name_1 --pool default 
-        virsh vol-delete $name_2 --pool default 
-	fi
-    done
 }
 
 delete_vms_multiple() {
