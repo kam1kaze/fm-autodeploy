@@ -79,8 +79,8 @@ add_disk_to_vm() {
     echo "Adding disk to $vm_name, with size $disk_mb Mb..."
 
     #vm_disk_path="$(get_vm_base_path)"
-    disk_name="${vm_name}_${port}"
-    disk_filename="${disk_name}.qcow2"
+    disk_name="${vm_name}_${port}.qcow2"
+    #disk_filename="${disk_name}.qcow2"
     #qemu-img create -f qcow2 -o preallocation=metadata ${vm_disk_path}/${disk_filename} ${disk_mb}M
     virsh vol-create-as default ${disk_name} ${disk_mb}M --format qcow2
     # adding sata disk via xml, as attach-disk can't specify bus=sata
