@@ -1,21 +1,16 @@
-#!/bin/bash -x
+#!/bin/bash
 
 #
 # This script creates slaves node for the product, launches its installation,
 # and waits for its completion
 #
 
-# Include the handy functions to operate VMs
-source config.sh
-source functions/vm.sh
-
 # Create and start slave nodes
 for idx in $(seq 1 $cluster_size); do
     name="${env_name_prefix}slave-${idx}"
     echo
-    delete_vm $name
-    vm_ram=${vm_slave_memory_mb[$idx]}
-    [ -z $vm_ram ] && vm_ram=$vm_slave_memory_default
+    is_vm_present $name && delete_vm $name
+    vm_ram=${vm_slave_memory_mb[$idx]:-$vm_slave_memory_default}
     echo
     first_net="${host_net_name[`echo ${!host_net_name[*]} | cut -d " " -f 1`]}"
     create_vm $name $first_net $vm_slave_cpu_cores $vm_ram $vm_slave_first_disk_mb

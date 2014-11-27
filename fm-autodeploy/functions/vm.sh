@@ -1,13 +1,13 @@
-#!/bin/bash 
+#!/bin/bash
 
 # This file contains the functions to manage VMs in through VirtualBox CLI
 
 get_vms_running() {
-    virsh list | grep -E "running|работает" | awk '{print $2}'
+    virsh -q list | awk '{print $2}'
 }
 
 get_vms_present() {
-    virsh list --all | grep -E "running|shut off|работает|выключен" | awk '{print $2}'
+    virsh -q list --all | awk '{print $2}'
 }
 
 is_vm_running() {
@@ -15,6 +15,18 @@ is_vm_running() {
     list=$(get_vms_running)
 
     # Check that the list of running VMs contains the given VM
+    if [[ $list = *$name* ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+is_vm_present() {
+    name=$1
+    list=$(get_vms_present)
+
+    # Check that the list of VMs contains the given VM
     if [[ $list = *$name* ]]; then
         return 0
     else

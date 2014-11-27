@@ -80,7 +80,7 @@ check_existing_vms() {
 check_all_bridges() {
   for idx1 in $idx_list
   do
-        ip=`ip a show dev ${host_net_bridge[$idx1]}`
+        ip=`ip a show dev ${host_net_bridge[$idx1]} 2>/dev/null`
         if [ $? == 0 ]; then
                 echo "Bridge exists"
                 check_existing_bridge ${host_net_bridge[$idx1]}
@@ -88,7 +88,7 @@ check_all_bridges() {
         fi
   done
 
-  if [[ $NET_ERR ]]; then
+  if [[ -n ${NET_ERR+x} ]]; then
         echo "ERROR: Some of bridges are already used, please check existing networks or redefine [idx] variable in config.sh"
         return 1
   else

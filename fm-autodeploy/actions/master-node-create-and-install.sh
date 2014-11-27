@@ -5,16 +5,11 @@
 # and waits for its completion
 #
 
-# Include the handy functions to operate VMs and track ISO installation progress
-source config.sh
-source functions/vm.sh
-source functions/product.sh
-
 # Create master node for the product
 name="${env_name_prefix}master"
 first_net="${host_net_name[`echo ${!host_net_name[*]} | cut -d " " -f 1`]}"
 first_ip="${host_nic_ip[`echo ${!host_nic_ip[*]} | cut -d " " -f 1`]}"
-delete_vm $name
+is_vm_present $name && delete_vm $name
 echo
 
 # Adding bridge NIC if any
