@@ -1,6 +1,8 @@
 Mirantis Openstack Platform autodeployment
 ==============
 
+Copy config.exmaple.sh to config.sh. Make necessary changes.
+
 Usage:
 fmdeploy.sh prepare|destroy|fuel|slaves (-e env-name-prefix ) (-f fuel-iso-path) (-s cluster-size)
 
