@@ -28,7 +28,7 @@ while getopts ":e:f:s:" opt; do
       env_name_prefix=$OPTARG
       ;;
     f)
-      iso_path=$OPTARG
+      fuel_path=$OPTARG
       ;;
     s)
       cluster_size=$OPTARG

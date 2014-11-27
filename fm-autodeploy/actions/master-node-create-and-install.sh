@@ -5,6 +5,15 @@
 # and waits for its completion
 #
 
+# parse fuel iso_path params
+iso_path=${fuel_path:-$default_fuel_path}
+
+if [[ ${iso_path,,} =~ ^(https?|ftp|file):// ]]; then
+  wget $iso_path -O $default_fuel_path || { echo "ERROR: Cannot downloda FUEL iso from $iso_path" >&2; exit 1; }
+else
+  [[ -f "$iso_path" ]] || { echo "ERROR: Cannot find FUEL iso in $iso_path" >&2; exit 1; }
+fi
+
 # Create master node for the product
 name="${env_name_prefix}master"
 first_net="${host_net_name[`echo ${!host_net_name[*]} | cut -d " " -f 1`]}"
@@ -31,14 +40,13 @@ disk_filename="${disk_name}.qcow2"
 # Add other host-only nics to VM
 HOST_NETS=""
 for i in `seq 2 ${#host_net_name[*]}`
-do 
+do
   HOST_NETS="$HOST_NETS -w network=${host_net_name[`echo ${!host_net_name[*]} | cut -d " " -f $i`]},model=virtio "
 done
 
 #echo "virt-install --connect qemu:///system --hvm --name $name --ram $vm_master_memory_mb --vcpus $vm_master_cpu_cores --disk ${vm_disk_path}/${disk_filename},bus=virtio,cache=none,format=qcow2,io=native -w network=$first_net,model=virtio $BRIDGE_NET $HOST_NETS --disk ${iso_path},device=cdrom --autostart --graphics vnc --location $(pwd) --extra-args \"initrd=initrd.img biosdevname=0 ks=cdrom:/ks.cfg ip=$vm_master_ip gw=$first_ip dns1=8.8.8.8 netmask=255.255.255.0 hostname=fuelweb.domain.tld\""
 
-virt-install --connect qemu:///system --noautoconsole --hvm --name $name --ram $vm_master_memory_mb --vcpus $vm_master_cpu_cores --disk pool=default,size=${vm_master_disk_gb},bus=virtio,cache=none,format=qcow2,io=native -w network=$first_net,model=virtio $BRIDGE_NET $HOST_NETS --disk ${iso_path},device=cdrom --autostart --graphics vnc --location ${SCRIPT_DIR}/linux --extra-args "initrd=initrd.img biosdevname=0 ks=cdrom:/ks.cfg ip=$vm_master_ip gw=$first_ip dns1=8.8.8.8 netmask=255.255.255.0 hostname=fuelweb.${domain_name}"
-
+virt-install --connect qemu:///system --noautoconsole --hvm --name $name --ram $vm_master_memory_mb --vcpus $vm_master_cpu_cores --disk pool=default,size=${vm_master_disk_gb},bus=virtio,cache=none,format=qcow2,io=native -w network=$first_net,model=virtio $BRIDGE_NET $HOST_NETS --disk ${iso_path},device=cdrom --autostart --graphics vnc --location ${scriptdir}/linux --extra-args "initrd=initrd.img biosdevname=0 ks=cdrom:/ks.cfg ip=$vm_master_ip gw=$first_ip dns1=8.8.8.8 netmask=255.255.255.0 hostname=fuelweb.${domain_name}"
 
 # Start virtual machine with the master node
 echo "Waiting for OS installation on Master node"

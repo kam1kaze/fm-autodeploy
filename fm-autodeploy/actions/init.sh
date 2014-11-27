@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Check for ISO image to be available
-echo -n "Checking for Fuel Web ISO image... "
-if [ -z $iso_path ]; then
-    echo "Fuel Web image is not found. Please download it and put under 'iso' directory."
-    exit 1
-fi
-echo "OK"
-
 # Check for expect
 echo -n "Checking for 'expect'... "
 expect -v >/dev/null 2>&1 || { echo >&2 "'expect' is not available in the path, but it's required. Please install 'expect' package. Aborting."; exit 1; }
@@ -32,3 +24,8 @@ for ip in 10.20.100.1 172.16.1.1; do
   idx_list+=" $idx"
   idx=$((idx+1))
 done
+
+# Create directory for iso disks
+mkdir -p $iso_storage
+
+default_fuel_path="$iso_storage/${env_name_prefix}fuel.iso"

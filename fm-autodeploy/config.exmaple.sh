@@ -1,6 +1,4 @@
-#!/bin/bash 
-
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#!/bin/bash
 
 # The number of nodes for installing OpenStack on
 #   - for minimal non-HA installation, specify 2 (1 controller + 1 compute)
@@ -8,13 +6,11 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #   - for minimal HA installation, specify 4 (3 controllers + 1 compute)
 cluster_size=2
 
-# Get the first available ISO from the directory 'iso'
-iso_path=`ls -1 $SCRIPT_DIR/../*.iso 2>/dev/null | head -1`
+# Where are ISO disks stored
+iso_storage=~/iso/
 
-# Every Fuel Web machine name will start from this prefix  
-env_name_prefix=fw51-jenkins-
-
-vm_disk_path="$SCRIPT_DIR/images"
+# Every Fuel Web machine name will start from this prefix
+env_name_prefix=fw-jenkins-
 
 #Use bridge interface: 0 - false, 1 - true. If you have existing bridge with pysical NIC you can use it for VMs. Bridged network will be created as eth1 in guest OS.
 use_bridge=0
