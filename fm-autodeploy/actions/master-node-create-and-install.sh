@@ -6,12 +6,19 @@
 #
 
 # parse fuel iso_path params
-iso_path=${fuel_path:-$default_fuel_path}
-
-if [[ ${iso_path,,} =~ ^(https?|ftp|file):// ]]; then
-  wget $iso_path -O $default_fuel_path || { echo "ERROR: Cannot downloda FUEL iso from $iso_path" >&2; exit 1; }
+if [[ -z ${fuel_path:-} ]]; then
+  # param does not exist
+  iso_path=$default_fuel_path
+elif [[ ${fuel_path,,} =~ ^(https?|ftp|file):// ]]; then
+  # param is link
+  wget $fuel_path -O $default_fuel_path 2>&1 \
+    | awk '$7 ~ /^[0-9]{1,3}%$/{if(s!=$7)print;s=$7;next}{print}' \
+    || { echo "ERROR: Cannot downloda FUEL iso from $fuel_path" >&2; exit 1; }
+  iso_path=$default_fuel_path
 else
-  [[ -f "$iso_path" ]] || { echo "ERROR: Cannot find FUEL iso in $iso_path" >&2; exit 1; }
+  # param is regular path
+ [[ -f "$fuel_path" ]] || { echo "ERROR: Cannot find FUEL iso in $fuel_path" >&2; exit 1; }
+ iso_path=$fuel_path
 fi
 
 # Create master node for the product
