@@ -3,8 +3,11 @@
 # Enable strict mode
 set -euo pipefail
 
-scriptdir=$(dirname $0)
-scriptname=$(basename $0)
+# Reset locale settings
+export LC_ALL=C
+
+scriptdir=$(cd $(dirname "$0") && pwd)
+scriptname=$(basename "$0")
 
 # Include the script with handy functions to operate VMs and Virtual networking
 source $scriptdir/config.sh
