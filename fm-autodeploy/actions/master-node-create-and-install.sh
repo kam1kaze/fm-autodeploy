@@ -12,7 +12,7 @@ if [[ -z ${fuel_path:-} ]]; then
 elif [[ ${fuel_path,,} =~ ^(https?|ftp|file):// ]]; then
   # param is link
   wget $fuel_path -O $default_fuel_path 2>&1 \
-    | awk '$7 ~ /^[0-9]{1,3}%$/{if(s!=$7)print;s=$7;next}{print}' \
+    | gawk --posix '$7 ~ /^[0-9]{1,3}%$/{if(s!=$7)print;s=$7;next}{print}' \
     || { echo "ERROR: Cannot downloda FUEL iso from $fuel_path" >&2; exit 1; }
   iso_path=$default_fuel_path
 else
