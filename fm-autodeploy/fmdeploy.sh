@@ -10,13 +10,12 @@ scriptdir=$(cd $(dirname "$0") && pwd)
 scriptname=$(basename "$0")
 
 # Include the script with handy functions to operate VMs and Virtual networking
-source $scriptdir/config.sh
 source $scriptdir/functions/vm.sh
 source $scriptdir/functions/network.sh
 source $scriptdir/functions/product.sh
 
 function usage {
-  echo "Usage: $scriptname prepare|destroy|fuel|slaves (-e env-name-prefix ) (-f fuel-iso-path) (-s cluster-size)" >&2
+  echo "Usage: $scriptname prepare|destroy|fuel|slaves (-f fuel-iso-path) (-c config_path)" >&2
   exit 1
 }
 
@@ -25,16 +24,13 @@ action=${1:-NONE}
 [[ $# > 0 ]] && shift
 
 # Parse params
-while getopts ":e:f:s:" opt; do
+while getopts ":f:c:" opt; do
   case $opt in
-    e)
-      env_name_prefix=$OPTARG
-      ;;
     f)
-      fuel_path=$OPTARG
+      param_fuel_path=$OPTARG
       ;;
-    s)
-      cluster_size=$OPTARG
+    c)
+      param_config_path=$OPTARG
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -69,6 +65,15 @@ case $action in
     usage
     ;;
 esac
+
+# Include config
+config_path=${param_config_path:-$scriptdir/config.sh}
+if [[ -f $config_path ]]; then
+  source $config_path
+else
+  echo "ERROR: cannot find config file $config_path" >&2
+  exit 1
+fi
 
 # Initial checks and generate variables
 source $scriptdir/actions/init.sh

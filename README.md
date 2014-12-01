@@ -4,7 +4,7 @@
 Copy config.exmaple.sh to config.sh. Make necessary changes.
 
 ## Usage
-`fmdeploy.sh prepare|destroy|fuel|slaves (-e env-name-prefix ) (-f fuel-iso-path) (-s cluster-size)`
+`fmdeploy.sh prepare|destroy|fuel|slaves (-f fuel-iso-path) (-c config_path)`
 
 ### Actions
  * **prepare** - prepare environment (check netowrk configuration, create virtual networks)
@@ -13,8 +13,7 @@ Copy config.exmaple.sh to config.sh. Make necessary changes.
  * **destroy** - clear environment
 
 ### Params
- * **-e** - prefix for all kvm objects
- * **-f** - path to FUEL iso, can be regular path or URL (https/http/ftp)
- * **-s** - how many VMs should be created (exclude FUEL node)
+ * **-f** - path to FUEL iso, can be regular path or URL (https/http/ftp) (default: $PWD/${env-name-prefix}-fuel.iso)
+ * **-c** - path to config file (default: ${SCRIPT_DIR}/config.sh)
 
 **fuel** and **slaves** actions are repeatable. They can be used multiple times, in this case the old VMs will be deleted.

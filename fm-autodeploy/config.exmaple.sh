@@ -6,9 +6,6 @@
 #   - for minimal HA installation, specify 4 (3 controllers + 1 compute)
 cluster_size=2
 
-# Where are ISO disks stored
-iso_storage=~/iso/
-
 # Every Fuel Web machine name will start from this prefix
 env_name_prefix=fw-jenkins-
 
@@ -25,6 +22,17 @@ iface="eth1"
 #networks definition: id, list of host IP's for ech network. The first network will be used for provisioning
 idx=150
 netmask=255.255.255.0
+
+# Generate network params
+for ip in 10.20.100.1 172.16.1.1; do
+#for ip in 10.20.0.1 240.0.1.1 172.16.0.1; do
+  host_net_name[$idx]="${env_name_prefix}${idx}"
+  host_net_bridge[$idx]="virbr${idx}"
+  host_nic_ip[$idx]="$ip"
+  host_nic_mask[$idx]="255.255.255.0"
+  idx_list+=" $idx"
+  idx=$((idx+1))
+done
 
 # Master node settings
 vm_master_cpu_cores=1
