@@ -13,3 +13,6 @@ echo "OK"
 #Check for qemu-img
 #echo -n "Checking for 'qemu-img'... "
 #which qemu-img >/dev/null && { echo >&2 "OK"; } || { echo  >&2 "'qemu-img' tool is not installed."; exit 1; }
+
+# Default path to ISO
+default_fuel_path="./${env_name_prefix}fuel.iso"

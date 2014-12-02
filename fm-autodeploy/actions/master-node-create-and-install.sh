@@ -5,9 +5,6 @@
 # and waits for its completion
 #
 
-# Default path to ISO
-default_fuel_path="./${env_name_prefix}fuel.iso"
-
 # parse fuel iso_path params
 if [[ -z ${param_fuel_path:-} ]]; then
   # param does not exist
